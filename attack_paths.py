@@ -1,0 +1,56 @@
+from time import sleep
+from pathlib import Path
+from sources.entra_id import EntraID
+from sources.proofpoint_zenguide import ProofpointZenGuide
+from sources.crowdstrike_idp import CrowdstrikeIDP
+from sources.crowdstrike_spotlight import CrowdstrikeSpotlight
+import json
+
+class AttackPathsHandler:
+    def __init__(self):
+        print("Welcome to the SA Power Networks Attack Paths tool.")
+
+        #Define sources here
+        self.sources = [
+            EntraID,
+            #ProofpointZenGuide,
+            CrowdstrikeIDP,
+            CrowdstrikeSpotlight
+        ]
+
+        self.output_dir = Path(__file__).parent / "data"
+
+        #Attack Paths
+        self.attack_paths = []
+
+    def export_data(self, data, file_name):
+        file_path = self.output_dir / file_name
+        with file_path.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+
+    def collect_data(self):
+        print("[+] Starting data collection...")
+
+        #Collect attack path data sources
+        for source in self.sources:
+            print(f"[+] Collecting data from {source.__name__}...")
+            module = source()
+            module.retrieve_data()
+
+    def generate_attack_paths(self):
+        #Generate attack path data 
+        for source in self.sources:
+            print(f"[+] Generating attack paths from {source.__name__}...")
+            module = source()
+            self.attack_paths.extend(module.generate_attack_paths())
+
+        self.export_data(self.attack_paths, "attack_paths.json")
+        print("[+] Exported %s paths to attack_paths.json" % (len(self.attack_paths)))
+
+    def main(self):
+        self.collect_data()
+        self.generate_attack_paths()
+
+if __name__ == "__main__":
+    ap = AttackPathsHandler()
+    ap.main()
