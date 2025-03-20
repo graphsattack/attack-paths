@@ -13,7 +13,7 @@ class AttackPathsHandler:
         #Define sources here
         self.sources = [
             EntraID,
-            #ProofpointZenGuide,
+            ProofpointZenGuide,
             CrowdstrikeIDP,
             CrowdstrikeSpotlight
         ]
@@ -22,6 +22,9 @@ class AttackPathsHandler:
 
         #Attack Paths
         self.attack_paths = []
+
+        #Risks
+        self.risks = []
 
     def export_data(self, data, file_name):
         file_path = self.output_dir / file_name
@@ -35,7 +38,7 @@ class AttackPathsHandler:
         for source in self.sources:
             print(f"[+] Collecting data from {source.__name__}...")
             module = source()
-            module.retrieve_data()
+            #module.retrieve_data()
 
     def generate_attack_paths(self):
         #Generate attack path data 
@@ -47,9 +50,20 @@ class AttackPathsHandler:
         self.export_data(self.attack_paths, "attack_paths.json")
         print("[+] Exported %s paths to attack_paths.json" % (len(self.attack_paths)))
 
+    def generate_risks(self):
+        #Generate node risk data 
+        for source in self.sources:
+            print(f"[+] Generating risks from {source.__name__}...")
+            module = source()
+            self.risks.extend(module.generate_risks())
+
+        self.export_data(self.risks, "risks.json")
+        print("[+] Exported %s risks to risks.json" % (len(self.risks)))
+
     def main(self):
         self.collect_data()
         self.generate_attack_paths()
+        self.generate_risks()
 
 if __name__ == "__main__":
     ap = AttackPathsHandler()

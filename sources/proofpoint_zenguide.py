@@ -29,7 +29,7 @@ class ProofpointZenGuide(BaseParser):
 
         self.export_data(all_results, self.export_file)
 
-    def generate_attack_paths(self):
+    def generate_risks(self):
         #Enrich with EntraID data for samAccountNames
         entra_id = self.load_data("entra_id.json")
 
@@ -49,7 +49,7 @@ class ProofpointZenGuide(BaseParser):
 
         proofpoint_zenguide = self.load_data("proofpoint_zenguide.json")
 
-        paths = []
+        risks = []
 
         user_stats = defaultdict(lambda: {"total": 0, "failed": 0, "passed": 0})
 
@@ -68,20 +68,14 @@ class ProofpointZenGuide(BaseParser):
             total = stats["total"]
             failed_pct = (stats["failed"] / total) * 100 if total else 0
 
-            if failed_pct >= 30 and entra_id_user_lookup.get(user.lower()):
-                ap = {
-                    "PathSource": "ProofpointZenGuide",
-                    "StartNodeType": "Location",
-                    "StartNodeID": "External",
-                    "StartNodeDisplayName": "External",
-                    "Relation": "PHISHING",
-                    "EndNodeType": "User",
-                    "EndNodeID": entra_id_user_lookup.get(user.lower())["samAccountName"],
-                    "EndNodeDisplayName": entra_id_user_lookup.get(user.lower())["displayName"],
-                    "PathType": "EntryPoint",
-                    "Complexity": "Medium"
+            if failed_pct > 0 and entra_id_user_lookup.get(user.lower()):
+                risk = {
+                    "RiskSource": "ProofpointZenGuide",
+                    "UserID": entra_id_user_lookup.get(user.lower())["samAccountName"],
+                    "RiskName": "FAILED_PHISHING_DRILLS",
+                    "RiskScore": (round(failed_pct))
                 }
 
-                paths.append(ap)
+                risks.append(risk)
         
-        return paths
+        return risks

@@ -26,3 +26,6 @@ class BaseParser:
         
     def generate_attack_paths(self):
         return []
+    
+    def generate_risks(self):
+        return []
