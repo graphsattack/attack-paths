@@ -47,9 +47,6 @@ class AttackPathsHandler:
             module = source()
             self.attack_paths.extend(module.generate_attack_paths())
 
-        self.export_data(self.attack_paths, "attack_paths.json")
-        print("[+] Exported %s paths to attack_paths.json" % (len(self.attack_paths)))
-
     def generate_risks(self):
         #Generate node risk data 
         for source in self.sources:
@@ -57,13 +54,22 @@ class AttackPathsHandler:
             module = source()
             self.risks.extend(module.generate_risks())
 
-        self.export_data(self.risks, "risks.json")
-        print("[+] Exported %s risks to risks.json" % (len(self.risks)))
+    def attribute_risks_to_users(self):
+        for path in self.attack_paths:
+            start_node_risks = [risk for risk in self.risks if risk["UserID"] == path["StartNodeID"]]
+            end_node_risks = [risk for risk in self.risks if risk["UserID"] == path["EndNodeID"]]
+
+            path.update({"StartNodeRisks": start_node_risks})
+            path.update({"EndNodeRisks": end_node_risks})
+
+        self.export_data(self.attack_paths, "attack_paths.json")
+        print("[+] Exported %s paths to attack_paths.json" % (len(self.attack_paths)))
 
     def main(self):
-        self.collect_data()
+        #self.collect_data()
         self.generate_attack_paths()
         self.generate_risks()
+        self.attribute_risks_to_users()
 
 if __name__ == "__main__":
     ap = AttackPathsHandler()

@@ -236,3 +236,29 @@ class CrowdstrikeIDP(BaseParser):
                             paths.append(ap)
                             
         return paths
+    
+    def generate_risks(self):
+        crowdstrike_idp_entities = self.load_data("crowdstrike_idp_entities.json")
+
+        risks = []
+
+        for entity in crowdstrike_idp_entities:
+            for risk in [r for r in entity["riskFactors"] if r["type"] in ["WEAK_PASSWORD", "INACTIVE_ACCOUNT", "DUPLICATE_PASSWORD"]]:
+                if entity["type"] == "USER":
+                    if risk["type"] == "WEAK_PASSWORD":
+                        risk_score = 100
+                    elif risk["type"] == "INACTIVE_ACCOUNT":
+                        risk_score = 50
+                    elif risk["type"] == "DUPLICATE_PASSWORD":
+                        risk_score = 40
+
+                    risk = {
+                        "RiskSource": "CrowdstrikeIDP",
+                        "UserID": entity["secondaryDisplayName"].lower(),
+                        "RiskName": risk["type"],
+                        "RiskScore": risk_score
+                    }
+
+                    risks.append(risk)
+
+        return risks
