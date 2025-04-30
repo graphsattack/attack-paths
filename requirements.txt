@@ -1,0 +1,3 @@
+requests>=2.0.0
+msal>=1.0.0
+falconpy>=1.0.0
