@@ -1,0 +1,24 @@
+{
+    "script_settings": {},
+    "app_settings": {
+        "entra_id": {
+            "tenant_id": "",
+            "authentication": {
+                "client_id": "",
+                "client_secret": ""
+            }
+        },
+        "proofpoint_zenguide": {
+            "base_url": "",
+            "authentication": {
+                "client_secret": ""
+            }
+        },
+        "crowdstrike_idp": {
+            "authentication": {
+                "client_id": "",
+                "client_secret": ""
+            }
+        }
+    }
+}
