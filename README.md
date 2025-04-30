@@ -32,7 +32,7 @@ Example output:
 {
     "PathSource": "SomePlatform",
     "StartNodeType": "User",
-    "StartNodeDisplayName": Bob Jones",
+    "StartNodeDisplayName": "Bob Jones",
     "StartNodeID": "DOMAIN\bob",
     "Relation": "ADMIN",
     "EndNodeType": "Access",
