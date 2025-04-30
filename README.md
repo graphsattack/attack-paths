@@ -44,3 +44,9 @@ Example output:
     "EndNodeRisks": []
 }
 ```
+
+## ✅ Roadmap / TODO
+ - Finish off the Path Prioritisation
+ - Ingest new data sources
+ - Add better way to store creds
+ - Add better error handling
