@@ -1,4 +1,4 @@
-# Attack Paths
+# Attack Paths (not fully finished)
 
 **The Attack Paths tool** is a Python module that integrates with third-party cybersecurity tools such as **CrowdStrike**, **Proofpoint**, and others. It pulls data from their APIs, parses relevant data, and generates structured **attack paths** represented as JSON objects.
 
